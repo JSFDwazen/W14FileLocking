@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
 public class mappedRead {
 
     private final File fileMapped;
-    private final int level;
+    private int level;
     private final List<Edge> edges;
     private final TimeStamp timeStamp;
 
@@ -33,9 +33,6 @@ public class mappedRead {
     public mappedRead() throws IOException {
         this.edges = new ArrayList<>();
         this.fileMapped = new File("/media/Fractal/fileMapped.tmp");
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Welk level gegenereerd worden?: ");
-        level = scanner.nextInt();
         timeStamp = new TimeStamp();
         this.readFileMapped();
         System.out.println(timeStamp.toString());
@@ -47,16 +44,16 @@ public class mappedRead {
         try (RandomAccessFile aFile = new RandomAccessFile(this.fileMapped.getAbsolutePath(), "r"); FileChannel inChannel = aFile.getChannel()) {
             MappedByteBuffer buffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
             buffer.load();
+            this.level = buffer.getInt();
             for (int i = 0; i < (int) (3 * Math.pow(4, level - 1)); i++) {
                 double X1 = buffer.getDouble();
                 double Y1 = buffer.getDouble();
                 double X2 = buffer.getDouble();
                 double Y2 = buffer.getDouble();
                 String color = new Color(buffer.getDouble(), buffer.getDouble(), buffer.getDouble(), 1).toString();
-                int level = buffer.getInt();
 
                 //create edge
-                Edge edge = new Edge(X1, Y1, X2, Y2, color, level);
+                Edge edge = new Edge(X1, Y1, X2, Y2, color);
                 this.edges.add(edge);
             }
             this.timeStamp.setEnd("eind readFileMapped");
@@ -72,7 +69,6 @@ public class mappedRead {
                     System.out.println(edge.X2);
                     System.out.println(edge.Y2);
                     System.out.println(edge.color);
-                    System.out.println(edge.level);
                 }
             }
             buffer.clear(); // do something with the data and clear/compact it.

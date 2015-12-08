@@ -34,7 +34,7 @@ public class W13MemoryMapping implements Observer {
 
     private final KochFractal koch;
     private final File fileMapped;
-    private final int level;
+    private int level;
     private TimeStamp timeStamp;
 
     public W13MemoryMapping() throws IOException {
@@ -74,7 +74,7 @@ public class W13MemoryMapping implements Observer {
         long bufferSize = 8 * 1000000;
         MappedByteBuffer mappedBB = fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
         long counter = 0;
-
+        mappedBB.putInt(level);
         for (Edge edge : edges) {
             mappedBB.putDouble(edge.X1);
             mappedBB.putDouble(edge.Y1);
@@ -83,7 +83,6 @@ public class W13MemoryMapping implements Observer {
             mappedBB.putDouble(Color.valueOf(edge.color).getRed());
             mappedBB.putDouble(Color.valueOf(edge.color).getGreen());
             mappedBB.putDouble(Color.valueOf(edge.color).getBlue());
-            mappedBB.putInt(edge.level);
             counter++;
         }
         timeStamp.setEnd("eind writeFileMapped");
@@ -96,16 +95,16 @@ public class W13MemoryMapping implements Observer {
         try (RandomAccessFile aFile = new RandomAccessFile(fileMapped.getAbsolutePath(), "r"); FileChannel inChannel = aFile.getChannel()) {
             MappedByteBuffer buffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
             buffer.load();
+            this.level = buffer.getInt();
             for (int i = 0; i < (int) (3 * Math.pow(4, level - 1)); i++) {
                 double X1 = buffer.getDouble();
                 double Y1 = buffer.getDouble();
                 double X2 = buffer.getDouble();
                 double Y2 = buffer.getDouble();
                 String color = new Color(buffer.getDouble(), buffer.getDouble(), buffer.getDouble(), 1).toString();
-                int level = buffer.getInt();
-                
+
                 //create edge
-                Edge edge = new Edge(X1, Y1, X2, Y2, color, level);
+                Edge edge = new Edge(X1, Y1, X2, Y2, color);
                 edges.add(edge);
             }
             timeStamp.setEnd("eind readFileMapped");
@@ -118,7 +117,6 @@ public class W13MemoryMapping implements Observer {
                 System.out.println(edge.X2);
                 System.out.println(edge.Y2);
                 System.out.println(edge.color);
-                System.out.println(edge.level);
             }
             buffer.clear(); // do something with the data and clear/compact it.
         }

@@ -67,7 +67,7 @@ public class mappedWrite implements Observer {
         long bufferSize = 8 * 1000000;
         MappedByteBuffer mappedBB = fc.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize);
         long counter = 0;
-
+        mappedBB.putInt(level);
         for (Edge edge : edges) {
             mappedBB.putDouble(edge.X1);
             mappedBB.putDouble(edge.Y1);
@@ -76,7 +76,6 @@ public class mappedWrite implements Observer {
             mappedBB.putDouble(Color.valueOf(edge.color).getRed());
             mappedBB.putDouble(Color.valueOf(edge.color).getGreen());
             mappedBB.putDouble(Color.valueOf(edge.color).getBlue());
-            mappedBB.putInt(edge.level);
             counter++;
         }
         this.timeStamp.setEnd("eind writeFileMapped");

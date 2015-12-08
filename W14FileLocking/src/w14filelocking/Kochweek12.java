@@ -129,7 +129,7 @@ public class Kochweek12 implements Observer {
     public void writeString(ArrayList<Edge> e) throws IOException {
         String Edgestring = "";
         for (Edge edge : e) {
-            Edgestring += edge.X1 + " " + edge.Y1 + " " + edge.X2 + " " + edge.Y2 + " " + edge.color + " " + edge.level + "\n";
+            Edgestring += edge.X1 + " " + edge.Y1 + " " + edge.X2 + " " + edge.Y2 + " " + edge.color + "\n";
         }
         FileWriter Bw = new FileWriter(fileUtxt, true);
         Bw.write(Edgestring);
@@ -139,7 +139,7 @@ public class Kochweek12 implements Observer {
     public void writeStringBuffered(ArrayList<Edge> e) throws IOException {
         String Edgestring = "";
         for (Edge edge : e) {
-            Edgestring += edge.X1 + " " + edge.Y1 + " " + edge.X2 + " " + edge.Y2 + " " + edge.color + " " + edge.level + "\n";
+            Edgestring += edge.X1 + " " + edge.Y1 + " " + edge.X2 + " " + edge.Y2 + " " + edge.color + "\n";
         }
         BufferedWriter Bw = new BufferedWriter(new FileWriter(fileBtxt, true));
         Bw.write(Edgestring);
