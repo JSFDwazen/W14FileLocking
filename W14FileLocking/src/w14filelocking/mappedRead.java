@@ -106,10 +106,10 @@ public class mappedRead {
                 this.edges.add(edge);
             }
             this.timeStamp.setEnd("eind readFileMapped");
-            System.out.println("" + edges.size());
+            System.out.println("number of edges: " + edges.size());
             //print read edges
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Wil je de edges tekenen? (y/n): ");
+            System.out.print("Wil je de edges uitprinten? (y/n): ");
             if (scanner.next().equals("y")) {
                 for (Edge edge : edges) {
                     System.out.println("-------");

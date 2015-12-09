@@ -48,6 +48,7 @@ public class JSF31KochFractalFX extends Application {
 
     // Current level of Koch fractal
     public static int currentLevel = 1;
+    public static int previousLevel = 0;
 
     // Labels for level, nr edges, calculation time, and drawing time
     private Label labelLevel;
@@ -164,11 +165,18 @@ public class JSF31KochFractalFX extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        edges.add(new Edge(0.0669872981077807, 0.75, 0.9330127018922193, 0.75, "0x0000ffff"));
+        edges.add(new Edge(0.5, 0.0, 0.0669872981077807, 0.75, "0x00ff00ff"));
+        edges.add(new Edge(0.9330127018922193, 0.75, 0.5, 0.0, "0xff0000ff"));
+        drawEdges();
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                drawEdges();
+                if (currentLevel != previousLevel) {
+                    previousLevel = currentLevel;
+                    drawEdges();
+                }
             }
         }, 1 * 1000, 1 * 1000);
     }

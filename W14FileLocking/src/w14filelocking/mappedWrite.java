@@ -30,7 +30,7 @@ public class mappedWrite implements Observer {
 
     private final KochFractal koch;
     private final File fileMapped;
-    private final int level;
+    private int level;
     private final FileOutputStream writer;
     private final List<Edge> edges;
     private final TimeStamp timeStamp;
@@ -45,19 +45,26 @@ public class mappedWrite implements Observer {
         this.fileMapped = new File("/media/Fractal/fileMapped.tmp");
         this.writer = new FileOutputStream(fileMapped);
         this.koch.addObserver(this);
+        this.level = 1;
+        this.timeStamp = new TimeStamp();
+        this.generate();
+    }
+
+    public void generate() throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Welk level gegenereerd worden?: ");
         this.level = scanner.nextInt();
         this.koch.setLevel(level);
+        edges.clear();
         this.koch.generateBottomEdge();
         this.koch.generateLeftEdge();
         this.koch.generateRightEdge();
 
-        this.timeStamp = new TimeStamp();
         this.writeFileMapped();
         System.out.println(timeStamp.toString());
         File newdir = new File("/media/Fractal/fileMapped" + level + ".tmp");
         Files.move(fileMapped.toPath(), newdir.toPath(), REPLACE_EXISTING);
+        this.generate();
     }
 
     @Override
