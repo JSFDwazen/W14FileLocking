@@ -45,6 +45,12 @@ public class mappedRead {
     public mappedRead() throws IOException {
         this.edges = new ArrayList<>();
         timeStamp = new TimeStamp();
+        Thread t = new Thread(){
+            public void run(){
+                JSF31KochFractalFX.main(new String[0]);
+            }
+        };
+        t.start();
         checkChange();
     }
 

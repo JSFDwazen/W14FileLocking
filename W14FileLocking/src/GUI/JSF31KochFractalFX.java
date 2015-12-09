@@ -26,6 +26,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import w14filelocking.Edge;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -162,7 +164,13 @@ public class JSF31KochFractalFX extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        this.drawEdges();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                drawEdges();
+            }
+        }, 1 * 1000, 1 * 1000);
     }
 
     public void drawEdges() {
