@@ -22,6 +22,8 @@ import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
 
@@ -43,12 +45,13 @@ public class mappedRead {
     public mappedRead() throws IOException {
         this.edges = new ArrayList<>();
         timeStamp = new TimeStamp();
+        checkChange();
+    }
+
+    public void checkChange() {
         final WatchService watchService;
         Path dir = Paths.get("/media/Fractal/");
         WatchKey key;
-        
-        JSF31KochFractalFX.main(new String[0]);
-
         try {
             watchService = FileSystems.getDefault().newWatchService();
             dir.register(watchService, ENTRY_MODIFY);
@@ -66,12 +69,14 @@ public class mappedRead {
                         System.out.println(timeStamp.toString());
                         JSF31KochFractalFX.currentLevel = level;
                         JSF31KochFractalFX.edges = this.edges;
-                        
+                        checkChange();
                     }
                 }
             }
-        } catch (IOException | InterruptedException e) {
-
+        } catch (InterruptedException ex) {
+            Logger.getLogger(mappedRead.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(mappedRead.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
