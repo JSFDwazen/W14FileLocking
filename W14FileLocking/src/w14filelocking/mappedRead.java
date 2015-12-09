@@ -5,6 +5,8 @@
  */
 package w14filelocking;
 
+import GUI.JSF31KochFractalFX;
+import TimeStamp.TimeStamp;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -13,6 +15,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import javafx.application.Application;
 import javafx.scene.paint.Color;
 
 /**
@@ -36,6 +39,9 @@ public class mappedRead {
         timeStamp = new TimeStamp();
         this.readFileMapped();
         System.out.println(timeStamp.toString());
+        JSF31KochFractalFX.currentLevel = level;
+        JSF31KochFractalFX.edges = this.edges;
+        JSF31KochFractalFX.main(new String[0]);
     }
 
     public void readFileMapped() throws IOException {
