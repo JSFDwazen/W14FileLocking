@@ -12,6 +12,13 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -24,7 +31,7 @@ import javafx.scene.paint.Color;
  */
 public class mappedRead {
 
-    private final File fileMapped;
+    private File fileMapped;
     private int level;
     private final List<Edge> edges;
     private final TimeStamp timeStamp;
@@ -35,16 +42,41 @@ public class mappedRead {
 
     public mappedRead() throws IOException {
         this.edges = new ArrayList<>();
-        this.fileMapped = new File("/media/Fractal/fileMapped.tmp");
         timeStamp = new TimeStamp();
-        this.readFileMapped();
-        System.out.println(timeStamp.toString());
-        JSF31KochFractalFX.currentLevel = level;
-        JSF31KochFractalFX.edges = this.edges;
+        final WatchService watchService;
+        Path dir = Paths.get("/media/Fractal/");
+        WatchKey key;
+        
         JSF31KochFractalFX.main(new String[0]);
+
+        try {
+            watchService = FileSystems.getDefault().newWatchService();
+            dir.register(watchService, ENTRY_MODIFY);
+
+            while (true) {
+                key = watchService.take();
+                for (WatchEvent<?> watchEvent : key.pollEvents()) {
+                    WatchEvent<Path> ev = (WatchEvent<Path>) watchEvent;
+                    Path fileName = ev.context();
+                    Path child = dir.resolve(fileName);
+                    WatchEvent.Kind kind = ev.kind();
+                    if (kind == ENTRY_MODIFY) {
+                        System.out.println(child + " modified");
+                        this.readFileMapped(child.toFile());
+                        System.out.println(timeStamp.toString());
+                        JSF31KochFractalFX.currentLevel = level;
+                        JSF31KochFractalFX.edges = this.edges;
+                        
+                    }
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+
+        }
     }
 
-    public void readFileMapped() throws IOException {
+    public void readFileMapped(File file) throws IOException {
+        fileMapped = file;
         this.edges.clear();
         this.timeStamp.setBegin("begin readFileMapped");
         try (RandomAccessFile aFile = new RandomAccessFile(this.fileMapped.getAbsolutePath(), "r"); FileChannel inChannel = aFile.getChannel()) {

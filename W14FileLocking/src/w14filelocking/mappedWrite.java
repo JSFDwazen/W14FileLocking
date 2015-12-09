@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -53,6 +56,8 @@ public class mappedWrite implements Observer {
         this.timeStamp = new TimeStamp();
         this.writeFileMapped();
         System.out.println(timeStamp.toString());
+        File newdir = new File("/media/Fractal/fileMapped" + level + ".tmp");
+        Files.move(fileMapped.toPath(), newdir.toPath(), REPLACE_EXISTING);
     }
 
     @Override
